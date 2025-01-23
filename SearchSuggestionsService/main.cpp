@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         }
     }
     MainWindow w;
+    w.setWindowTitle("Search Suggestions Service");
     w.show();
     return a.exec();
 }

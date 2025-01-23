@@ -17,7 +17,7 @@ public:
 private:
     struct TrieNode {
         std::unordered_map<char, std::unique_ptr<TrieNode>> m_children;
-        std::unordered_map<std::string, int> m_frequency; // Частота слов
+        std::unordered_map<std::string, int> m_frequency;
         bool m_isEndOfWord = false;
     };
     void collectWords(TrieNode* node, const std::string& prefix, std::vector<std::pair<std::string, int>>& results);

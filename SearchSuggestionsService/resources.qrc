@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/clear-svgrepo-com.svg</file>
+        <file>icons/description-svgrepo-com.svg</file>
+        <file>icons/search-alt-2-svgrepo-com.svg</file>
     </qresource>
 </RCC>

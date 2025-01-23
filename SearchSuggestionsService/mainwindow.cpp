@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->lineEdit_2, &QLineEdit::textChanged, this, &MainWindow::updateSuggestions);
     connect(ui->clearBtn, &QPushButton::clicked, this, &MainWindow::onClearSuggestionForm);
+    connect(ui->searchBtn, &QPushButton::clicked, this, &MainWindow::onSearchGoogle);
     connect(m_completer, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::onSuggestionSelected);
 }
 
@@ -57,4 +58,12 @@ void MainWindow::onClearSuggestionForm() {
 
 void MainWindow::onUpdateButtonVisibility(const QString &text) {
     ui->clearBtn->setVisible(!text.isEmpty());
+}
+
+void MainWindow::onSearchGoogle() {
+    QString query = ui->lineEdit_2->text().trimmed();
+    if (!query.isEmpty()) {
+        QString url = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(query);
+        QDesktopServices::openUrl(QUrl(url));
+    }
 }

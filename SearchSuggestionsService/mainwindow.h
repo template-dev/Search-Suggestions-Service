@@ -6,6 +6,8 @@
 #include <QCompleter>
 #include <QStringListModel>
 #include <QtConcurrent>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QDebug>
 #include "suggestionservice.h"
 
@@ -33,5 +35,6 @@ private slots:
     void onSuggestionSelected(const QString &suggestion);
     void onClearSuggestionForm();
     void onUpdateButtonVisibility(const QString &text);
+    void onSearchGoogle();
 };
 #endif // MAINWINDOW_H
