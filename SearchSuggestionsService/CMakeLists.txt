@@ -14,8 +14,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
 set(TS_FILES SearchSuggestionsService_en_US.ts)
 
-set(LIBRARY_DIR "${CMAKE_SOURCE_DIR}/libs")
-
 add_library(sqlite SHARED IMPORTED)
 
 set(PROJECT_SOURCES
@@ -36,6 +34,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         trie.h trie.cpp
         database.h database.cpp
         suggestionservice.h suggestionservice.cpp
+        resources.qrc
 
 
 
@@ -61,7 +60,6 @@ else()
 
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
-target_link_libraries(SearchSuggestionsService PRIVATE sqlite)
 target_link_libraries(SearchSuggestionsService PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Concurrent)
 target_link_libraries(SearchSuggestionsService PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql)
 target_link_libraries(SearchSuggestionsService PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
@@ -72,10 +70,6 @@ target_link_libraries(SearchSuggestionsService PRIVATE Qt${QT_VERSION_MAJOR}::Wi
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.SearchSuggestionsService)
 endif()
-set_target_properties(sqlite PROPERTIES
-    IMPORTED_LOCATION "${LIBRARY_DIR}/sqlite3.dll"
-    IMPORTED_IMPLIB "${LIBRARY_DIR}/sqlite3.lib"
-)
 set_target_properties(SearchSuggestionsService PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}

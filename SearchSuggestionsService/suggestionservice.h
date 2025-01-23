@@ -6,6 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QStringList>
+#include <QThread>
 #include <QDebug>
 #include <memory>
 #include <mutex>

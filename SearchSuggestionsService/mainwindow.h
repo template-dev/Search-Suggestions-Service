@@ -6,6 +6,7 @@
 #include <QCompleter>
 #include <QStringListModel>
 #include <QtConcurrent>
+#include <QDebug>
 #include "suggestionservice.h"
 
 QT_BEGIN_NAMESPACE
@@ -29,5 +30,8 @@ private:
 
 private slots:
     void updateSuggestions(const QString &text);
+    void onSuggestionSelected(const QString &suggestion);
+    void onClearSuggestionForm();
+    void onUpdateButtonVisibility(const QString &text);
 };
 #endif // MAINWINDOW_H

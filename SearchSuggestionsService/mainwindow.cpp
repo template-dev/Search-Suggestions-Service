@@ -13,7 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->lineEdit_2->setCompleter(m_completer);
 
+    ui->clearBtn->hide();
+
     connect(ui->lineEdit_2, &QLineEdit::textChanged, this, &MainWindow::updateSuggestions);
+    connect(ui->clearBtn, &QPushButton::clicked, this, &MainWindow::onClearSuggestionForm);
+    connect(m_completer, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::onSuggestionSelected);
 }
 
 MainWindow::~MainWindow()
@@ -24,13 +28,33 @@ MainWindow::~MainWindow()
 void MainWindow::updateSuggestions(const QString &text) {
     if (text.isEmpty()) {
         m_model->setStringList({});
+        ui->clearBtn->hide();
         return;
     }
 
+    ui->clearBtn->setVisible(!text.isEmpty());
+
     QtConcurrent::run([this, text]() {
         QStringList suggestions = SuggestionService::getInstance().fetchSuggestions("Search", text);
+
+        qDebug() << "Found hints:" << suggestions;
+
         QMetaObject::invokeMethod(this, [this, suggestions]() {
                 m_model->setStringList(suggestions);
             }, Qt::QueuedConnection);
     });
+}
+
+void MainWindow::onSuggestionSelected(const QString &suggestion) {
+    qDebug() << "A suggestion has been selected:" << suggestion;
+    SuggestionService::getInstance().addSuggestion("Search", suggestion, "phrase");
+    updateSuggestions(suggestion);
+}
+
+void MainWindow::onClearSuggestionForm() {
+    ui->lineEdit_2->clear();
+}
+
+void MainWindow::onUpdateButtonVisibility(const QString &text) {
+    ui->clearBtn->setVisible(!text.isEmpty());
 }

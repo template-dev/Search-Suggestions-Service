@@ -13,9 +13,9 @@ SuggestionService::SuggestionService()
     m_db.setDatabaseName("autocomplete.db");
 
     if (!m_db.open()) {
-        qDebug() << "Ошибка подключения к БД: " << m_db.lastError().text();
+        qDebug() << "Error connecting to the database: " << m_db.lastError().text();
     } else {
-        qDebug() << "Подключено к БД SQLite";
+        qDebug() << "Connected to SQLite database!";
         createTables();
     }
 }
@@ -37,7 +37,15 @@ void SuggestionService::createTables() {
 }
 
 void SuggestionService::addSuggestion(const QString& category, const QString& text, const QString& type) {
-    QSqlQuery sql;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::number(quintptr(QThread::currentThreadId())));
+    db.setDatabaseName("autocomplete.db");
+
+    if (!db.open()) {
+        qDebug() << "Error: The database did not open!" << db.lastError().text();
+        return;
+    }
+
+    QSqlQuery sql(db);
     sql.prepare("INSERT INTO suggestions (text, type, category, frequency) VALUES (:text, :type, :category, 1) "
                 "ON CONFLICT(text) DO UPDATE SET frequency = frequency + 1;");
     sql.bindValue(":text", text);
@@ -45,12 +53,24 @@ void SuggestionService::addSuggestion(const QString& category, const QString& te
     sql.bindValue(":category", category);
 
     if (!sql.exec()) {
-        qDebug() << "Ошибка при добавлении запроса: " << sql.lastError().text();
+        qDebug() << "Error: when updating frequency:" << sql.lastError().text();
+    } else {
+        qDebug() << "The refresh rate for:" << text;
     }
+
+    db.close();
 }
 
 QStringList SuggestionService::fetchSuggestions(const QString& category, const QString& prefix, int limit) {
-    QSqlQuery sql;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", QString::number(quintptr(QThread::currentThreadId())));
+    db.setDatabaseName("autocomplete.db");
+
+    if (!db.open()) {
+        qDebug() << "Error: The database did not open!" << db.lastError().text();
+        return {};
+    }
+
+    QSqlQuery sql(db);
     sql.prepare("SELECT text FROM suggestions WHERE category = :category AND text LIKE :prefix "
                 "ORDER BY frequency DESC LIMIT :limit");
     sql.bindValue(":category", category);
@@ -63,8 +83,9 @@ QStringList SuggestionService::fetchSuggestions(const QString& category, const Q
             results << sql.value(0).toString();
         }
     } else {
-        qDebug() << "Ошибка при поиске саджестов: " << sql.lastError().text();
+        qDebug() << "SQL error:" << sql.lastError().text();
     }
 
+    db.close();
     return results;
 }
