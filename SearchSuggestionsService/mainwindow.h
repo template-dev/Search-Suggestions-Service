@@ -7,6 +7,7 @@
 #include <QStringListModel>
 #include <QtConcurrent>
 #include <QDesktopServices>
+#include <QAbstractItemView>
 #include <QUrl>
 #include <QDebug>
 #include "suggestionservice.h"

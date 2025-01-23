@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_completer->setModel(m_model);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+    m_completer->setCompletionMode(QCompleter::PopupCompletion);
     ui->lineEdit_2->setCompleter(m_completer);
 
     ui->clearBtn->hide();
@@ -38,10 +39,12 @@ void MainWindow::updateSuggestions(const QString &text) {
     QtConcurrent::run([this, text]() {
         QStringList suggestions = SuggestionService::getInstance().fetchSuggestions("Search", text);
 
-        qDebug() << "Found hints:" << suggestions;
-
-        QMetaObject::invokeMethod(this, [this, suggestions]() {
+        QMetaObject::invokeMethod(this, [this, suggestions, text]() {
                 m_model->setStringList(suggestions);
+                m_completer->setCompletionPrefix(text);
+                if (!suggestions.isEmpty()) {
+                    m_completer->complete();
+                }
             }, Qt::QueuedConnection);
     });
 }
