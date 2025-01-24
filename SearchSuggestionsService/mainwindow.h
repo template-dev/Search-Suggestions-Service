@@ -10,6 +10,7 @@
 #include <QAbstractItemView>
 #include <QUrl>
 #include <QDebug>
+#include <QListView>
 #include "suggestionservice.h"
 
 QT_BEGIN_NAMESPACE

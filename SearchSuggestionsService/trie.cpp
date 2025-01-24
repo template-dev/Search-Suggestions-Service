@@ -26,7 +26,7 @@ void CategoryTrie::insert(const std::string& category, const std::string& word, 
         node = node->m_children[c].get();
     }
 
-    node->m_isEndOfWord = true;
+    //node->m_isEndOfWord = true;
     node->m_frequency[word] += freq;
 }
 

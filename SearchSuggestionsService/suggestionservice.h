@@ -18,7 +18,7 @@ public:
     ~SuggestionService();
 
     void addSuggestion(const QString& category, const QString& text, const QString& type);
-    QStringList fetchSuggestions(const QString& category, const QString& prefix, int limit = 5);
+    QStringList fetchSuggestions(const QString& category, const QString& prefix, int limit = 15);
 
 private:
     SuggestionService();
